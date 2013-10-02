@@ -14,7 +14,10 @@
 @interface SVMaybe : NSObject
 + (SVMaybe *)nothing;
 + (SVMaybe *)just:(id)value;
-- (SVMaybe *)then:(SVMaybe *)maybe;
+- (SVMaybe *)and:(SVMaybe *)maybe;
+- (SVMaybe *)map:(SVMaybe *(^)(id value))mapBlock;
+- (id)whenNothing:(id)nothingValue else:(id(^)(id value))justBlock;
 - (BOOL)isNothing;
+- (BOOL)isJust;
 - (id)justValue;
 @end
