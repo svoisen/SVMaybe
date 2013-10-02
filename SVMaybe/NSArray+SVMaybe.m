@@ -37,9 +37,4 @@
     }]];
 }
 
-- (NSArray *)stuff
-{
-    return nil;
-}
-
 @end
