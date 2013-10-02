@@ -6,6 +6,16 @@
 //  Copyright (c) 2013 Sean Voisen. All rights reserved.
 //
 
+#define MAKE_MAYBE_GENERIC(__className) \
+@protocol __className <NSObject> \
+@end \
+@class __className;  \
+@interface SVMaybe (__className##_SVMaybe_Generics) <__className> \
++ (SVMaybe <__className> *)nothing; \
++ (SVMaybe <__className> *)just:(__className *)value; \
+- (__className *)justValue; \
+@end
+
 #define JUST(x) [SVMaybe just:x]
 #define NOTHING [SVMaybe nothing]
 

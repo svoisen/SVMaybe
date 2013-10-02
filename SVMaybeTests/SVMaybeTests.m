@@ -10,6 +10,8 @@
 #import "NSArray+SVMaybe.h"
 #import <XCTest/XCTest.h>
 
+MAKE_MAYBE_GENERIC(NSString)
+
 @interface MaybeTests : XCTestCase
 
 @end
@@ -60,7 +62,7 @@
 
 - (void)testSimpleMapping
 {
-    SVMaybe *bound = [JUST(@"foo") map:^SVMaybe *(id value) {
+    SVMaybe<NSString> *bound = [JUST(@"foo") map:^SVMaybe *(id value) {
         return JUST([(NSString *)value stringByAppendingString:@"bar"]);
     }];
     
