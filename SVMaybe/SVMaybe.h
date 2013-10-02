@@ -12,7 +12,10 @@
 @class __className;  \
 @interface SVMaybe (__className##_SVMaybe_Generics) <__className> \
 + (SVMaybe <__className> *)nothing; \
-+ (SVMaybe <__className> *)just:(__className *)value; \
++ (SVMaybe *)just_##__className:(__className *)value; \
+- (SVMaybe <__className> *)and:(SVMaybe <__className> *)maybe; \
+- (SVMaybe <__className> *)map:(SVMaybe <__className> *(^)(__className *))justBlock; \
+- (__className *)whenNothing:(__className *)nothingValue else:(__className *(^)(__className *))justBlock; \
 - (__className *)justValue; \
 @end
 
@@ -25,8 +28,8 @@
 + (SVMaybe *)nothing;
 + (SVMaybe *)just:(id)value;
 - (SVMaybe *)and:(SVMaybe *)maybe;
-- (SVMaybe *)map:(SVMaybe *(^)(id value))mapBlock;
-- (id)whenNothing:(id)nothingValue else:(id(^)(id value))justBlock;
+- (SVMaybe *)map:(SVMaybe *(^)(id))mapBlock;
+- (id)whenNothing:(id)nothingValue else:(id(^)(id))justBlock;
 - (BOOL)isNothing;
 - (BOOL)isJust;
 - (id)justValue;

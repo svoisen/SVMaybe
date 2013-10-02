@@ -8,9 +8,11 @@
 
 #import "SVMaybe.h"
 #import "NSArray+SVMaybe.h"
+#import "NSObject+SVMaybe.h"
 #import <XCTest/XCTest.h>
 
 MAKE_MAYBE_GENERIC(NSString)
+MAKE_MAYBE_GENERIC(NSNumber)
 
 @interface MaybeTests : XCTestCase
 
@@ -102,17 +104,6 @@ MAKE_MAYBE_GENERIC(NSString)
 {
     NSArray *arr = [NSArray arrayWithObjects:NOTHING, nil];
     XCTAssertEqual([arr onlyJusts].count, (NSUInteger)0U, @"");
-}
-
-- (void)testArrayOnlyJustsFilter
-{
-    NSDictionary *person = @{@"firstName":@"Foo", @"lastName":@"Bar"};
-    
-    NSString *fullName = [[[@[JUST(person), JUST([person objectForKey:@"firstName"]), JUST([person objectForKey:@"lastName"])] onlyJusts] asMaybe] whenNothing:@"" else:^id(id value) {
-        return [NSString stringWithFormat:@"%@ %@", [person objectForKey:@"firstName"], [person objectForKey:@"lastName"]];
-    }];
-    
-    XCTAssertTrue([fullName isEqualToString:@"Foo Bar"], @"");
 }
 
 @end
