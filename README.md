@@ -65,11 +65,12 @@ Given this re-definition, if any of the strings in the above example were empty 
 Creating Maybes
 ---------------
 
-Use the provided macro:
+Use the provided macros:
 
 ```objc
 Maybe(@"foo");
-Maybe(nil);
+Maybe(nil); // Equals Nothing
+Nothing;
 ```
 
 Or a static method:
@@ -77,6 +78,7 @@ Or a static method:
 ```objc
 [SVMaybe maybe:@"foo"];
 [SVMaybe maybe:nil]; // Equals [SVMaybe nothing]
+[SVMaybe nothing];
 ```
 
 Getting Values
