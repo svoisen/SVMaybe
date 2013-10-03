@@ -1,10 +1,25 @@
-//
-//  SVMaybeTests.m
-//  MaybeTests
-//
-//  Created by Sean Voisen on 10/1/13.
-//  Copyright (c) 2013 Sean Voisen. All rights reserved.
-//
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Sean Voisen
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #import "SVMaybe.h"
 #import "NSObject+SVMaybe.h"
@@ -29,39 +44,39 @@
 
 - (void)testAndMaybeNothingUsingPreprocessorReturnsNothing
 {
-    SVMaybe *foo = [[MAYBE([NSNumber numberWithInt:0]) andMaybe:NOTHING] andMaybe:MAYBE(@"bar")];
-    XCTAssertEqual(foo, NOTHING, @"");
+    SVMaybe *foo = [[Maybe([NSNumber numberWithInt:0]) andMaybe:Nothing] andMaybe:Maybe(@"bar")];
+    XCTAssertEqual(foo, Nothing, @"");
 }
 
 - (void)testMaybeNilReturnsNothing
 {
-    XCTAssertEqual(MAYBE(nil), NOTHING, @"");
+    XCTAssertEqual(Maybe(nil), Nothing, @"");
 }
 
 - (void)testValueOfJustGivesValue
 {
-    SVMaybe *foo = MAYBE(@"bar");
+    SVMaybe *foo = Maybe(@"bar");
     XCTAssertTrue([[foo justValue] isEqualToString:@"bar"], @"");
 }
 
 - (void)testValueOfNothingThrowsException
 {
-    XCTAssertThrows([NOTHING justValue], @"");
+    XCTAssertThrows([Nothing justValue], @"");
 }
 
 - (void)testNothingIfSomethingReturnsNothing
 {
-    SVMaybe *bound = [NOTHING ifSomething:^SVMaybe *(id value) {
-        return MAYBE(@"foo");
+    SVMaybe *bound = [Nothing ifSomething:^SVMaybe *(id value) {
+        return Maybe(@"foo");
     }];
     
-    XCTAssertEqual(NOTHING, bound, @"");
+    XCTAssertEqual(Nothing, bound, @"");
 }
 
 - (void)testSimpleIfSomethingMapping
 {
-    SVMaybe *bound = [MAYBE(@"foo") ifSomething:^SVMaybe *(id value) {
-        return MAYBE([(NSString *)value stringByAppendingString:@"bar"]);
+    SVMaybe *bound = [Maybe(@"foo") ifSomething:^SVMaybe *(id value) {
+        return Maybe([(NSString *)value stringByAppendingString:@"bar"]);
     }];
     
     XCTAssertTrue([[bound justValue] isEqualToString:@"foobar"], @"");
@@ -69,15 +84,15 @@
 
 - (void)testSimpleIfSomethingMappingWithMacro
 {
-    SVMaybe *bound = [MAYBE(@"foo") ifSomething:MAP(something, [something stringByAppendingString:@"bar"])];
+    SVMaybe *bound = [Maybe(@"foo") ifSomething:MapMaybe(something, [something stringByAppendingString:@"bar"])];
     
     XCTAssertTrue([[bound justValue] isEqualToString:@"foobar"], @"");
 }
 
 - (void)testWhenNothingWithNothingReturnsDefaultValue
 {
-    NSString *foo = [NOTHING whenNothing:@"foo" else:^id(id value) {
-        return MAYBE(@"bar");
+    NSString *foo = [Nothing returnWhenNothing:@"foo" else:^id(id value) {
+        return Maybe(@"bar");
     }];
     
     XCTAssertTrue([foo isEqualToString:@"foo"], @"");
@@ -85,7 +100,7 @@
 
 - (void)testWhenNothingWithJustCallsBlock
 {
-    NSString *foo = [MAYBE(@"foo") whenNothing:@"foo" else:^id(id value) {
+    NSString *foo = [Maybe(@"foo") returnWhenNothing:@"foo" else:^id(id value) {
         return @"bar";
     }];
     
@@ -104,11 +119,28 @@
     
     NSDictionary *person = @{@"firstName":@"", @"lastName":@"Bar", @"address":@{}};
     
-    NSString *street = [[[MAYBE(person) ifSomething:MAP(person, MAYBE([person objectForKey:@"address"]))]
-                                        ifSomething:MAP(address, MAYBE([address objectForKey:@"street"]))]
-                                        whenNothing:@"No street"];
+    NSString *street = [[[Maybe(person) ifSomething:MapMaybe(person, [person objectForKey:@"address"])]
+                                        ifSomething:MapMaybe(address, [address objectForKey:@"street"])]
+                                        returnWhenNothing:@"No street"];
     
     XCTAssertTrue([street isEqualToString:@"No street"], @"");
+}
+
+- (void)testMultipleWhenElse
+{
+    [NSString defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSString *)evaluatedObject length] == 0;
+    }]];
+    
+    [NSDictionary defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSDictionary *)evaluatedObject count] == 0;
+    }]];
+    
+    NSDictionary *person = @{@"firstName":@"Foo", @"lastName":@"Bar", @"address":@{}};
+    NSString *name = [[[Maybe(person) whenNothing:Maybe(@"No person") else:MapMaybe(person, [person objectForKey:@"firstName"])]
+                                      whenNothing:Maybe(@"No first name")] justValue];
+    
+    XCTAssertTrue([name isEqualToString:@"Foo"], @"%@", name);
 }
 
 @end
