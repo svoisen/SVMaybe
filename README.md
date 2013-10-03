@@ -52,7 +52,7 @@ NSString *cityString = [[[Maybe(person) whenNothing:Maybe(@"No person.") else:Ma
                                         whenNothing:Maybe(@"No city.")] justValue];
 ```
 
-It also allows you to move beyond simple ```nil``` checks by offering run-time redefinition of what is meant by "nothing" on a per-class basis. For instance, in the above example suppose that empty strings should also be considered "nothing." Using the following definition:
+It also allows you to move beyond simple ```nil``` checks by offering run-time redefinition of what is meant by "nothing" on a per-class basis. For instance, in the above example suppose that empty strings should also be considered "nothing." Here's the re-definition:
 
 ```objc
 [NSString defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
@@ -60,7 +60,34 @@ It also allows you to move beyond simple ```nil``` checks by offering run-time r
 }]];
 ```
 
-If any of the strings in the above example were empty (or nil), the monad binding would short to nothing and return the appropriate default string wrapped in a SVMaybe.
+Given this re-definition, if any of the strings in the above example were empty (or nil), the monad binding would short to nothing and return the appropriate default string wrapped in a SVMaybe.
+
+Creating Maybes
+---------------
+
+Use the provided macro:
+
+```objc
+Maybe(@"foo");
+Maybe(nil);
+```
+
+Or a static method:
+
+```objc
+[SVMaybe maybe:@"foo"];
+[SVMaybe maybe:nil]; // Equals [SVMaybe nothing]
+```
+
+Getting Values
+--------------
+
+To get the value of a maybe:
+
+```objc
+[Maybe(@"foo") justValue] // "foo"
+[Nothing justValue] // Throws an exception!
+```
 
 Binding and Chaining
 --------------------
@@ -70,3 +97,8 @@ SVMaybe offers a few other chaining options in addition to ```whenNothing:else``
 * ```andMaybe:``` Binds multiple maybe values together, returning the last bound maybe. If any maybe is "nothing," the binding shorts and returns "nothing."
 
 * ```whenSomething:``` Binds and maps multiple maybes together using the provided block. If any maybe is "nothing," the binding shorts and returns "nothing."
+
+Underpinnings
+-------------
+
+SVMaybe is a simple "wrapper" class that provides binding functionality and a few convenience methods that are exposed as preprocessor macros. Nothing definitions are provided as category methods on ```NSObject```. It's not fancy, rather it's just enough syntactic sugar to make your code a bit more readable.
