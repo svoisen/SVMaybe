@@ -94,11 +94,8 @@ Binding and Chaining
 
 SVMaybe offers a few other chaining options in addition to ```whenNothing:else``` described above:
 
-* ```andMaybe:``` Binds multiple maybe values together, returning the last bound maybe. If any maybe is "nothing," the binding shorts and returns "nothing."
+* ```andMaybe:``` Binds multiple maybe values together, returning the last bound maybe. If any maybe is "nothing," the binding shorts and returns "nothing." (Equivalent to ```>>``` in Haskell.)
 
-* ```whenSomething:``` Binds and maps multiple maybes together using the provided block. If any maybe is "nothing," the binding shorts and returns "nothing."
+* ```whenSomething:``` Binds and maps multiple maybes together using the provided block. If any maybe is "nothing," the binding shorts and returns "nothing." (Equivalent to ```>>=``` in Haskell.)
 
-Underpinnings
--------------
-
-SVMaybe is a simple "wrapper" class that provides binding functionality and a few convenience methods that are exposed as preprocessor macros. Nothing definitions are provided as category methods on ```NSObject```. It's not fancy, rather it's just enough syntactic sugar to make your code a bit more readable.
+* ```whenNothing:``` Same as ```whenNothing:else:``` but without the else block. Returns ```self``` if not nothing.
