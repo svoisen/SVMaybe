@@ -47,4 +47,11 @@ SVMaybe allows you to more concisely and declaratively provide the same solution
     NSString *cityString = [[[Maybe(person) whenNothing:Maybe(@"No person.") else:MapMaybe(person, [person objectForKey:@"address"])]
                                             whenNothing:Maybe(@"No address.")] else:MapMaybe(address, [address objectForKey:@"city"])]
                                             whenNothing:Maybe(@"No city.")] justValue];
-   
+
+It also allows you to move beyond simple ```nil``` checks by offering run-time redefinition of what is meant by "nothing" on a per-class basis. For instance, in the above example suppose that empty strings should also be considered "nothing." Using the following definition:
+
+    [NSString defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSString *)evaluatedObject length] == 0;
+    }]];
+
+If any of the strings in the above example were empty (or nil), the monad binding would short to nothing and return the appropriate default string wrapped in a SVMaybe.
