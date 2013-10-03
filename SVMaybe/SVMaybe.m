@@ -7,7 +7,7 @@
 //
 
 #import "SVMaybe.h"
-#import "NSArray+SVMaybe.h"
+#import "NSObject+SVMaybe.h"
 
 #pragma mark - SVNothingMaybe
 
@@ -15,12 +15,12 @@
 
 @implementation SVNothingMaybe
 
-- (SVMaybe *)map:(SVMaybe *(^)(id value))mapBlock
+- (SVMaybe *)ifSomething:(SVMaybe *(^)(id value))mapBlock
 {
     return self;
 }
 
-- (SVMaybe *)and:(SVMaybe *)maybe
+- (SVMaybe *)andMaybe:(SVMaybe *)maybe
 {
     return self;
 }
@@ -30,7 +30,7 @@
     return YES;
 }
 
-- (BOOL)isJust
+- (BOOL)isSomething
 {
     return NO;
 }
@@ -42,9 +42,14 @@
                                  userInfo:nil];
 }
 
-- (id)whenNothing:(id)nothingValue else:(id (^)(id))justBlock
+- (id)whenNothing:(id)defaultValue else:(id (^)(id))justBlock
 {
-    return nothingValue;
+    return defaultValue;
+}
+
+- (id)whenNothing:(id)defaultValue
+{
+    return defaultValue;
 }
 
 @end
@@ -70,12 +75,12 @@
     return self;
 }
 
-- (SVMaybe *)map:(SVMaybe *(^)(id value))mapBlock
+- (SVMaybe *)ifSomething:(SVMaybe *(^)(id value))mapBlock
 {
     return mapBlock(_value);
 }
 
-- (SVMaybe *)and:(SVMaybe *)maybe
+- (SVMaybe *)andMaybe:(SVMaybe *)maybe
 {
     return maybe;
 }
@@ -85,7 +90,7 @@
     return NO;
 }
 
-- (BOOL)isJust
+- (BOOL)isSomething
 {
     return YES;
 }
@@ -95,9 +100,14 @@
     return _value;
 }
 
-- (id)whenNothing:(id)nothingValue else:(id (^)(id))justBlock
+- (SVMaybe *)whenNothing:(id)defaultValue else:(SVMaybe *(^)(id))justBlock
 {
     return justBlock([self justValue]);
+}
+
+- (SVMaybe *)whenNothing:(id)defaultValue
+{
+    return self;
 }
 
 @end
@@ -118,9 +128,9 @@
     return nothingInstance;
 }
 
-+ (SVMaybe *)just:(id)value
++ (SVMaybe *)maybe:(id)value
 {
-    if (value == nil)
+    if (value == nil || [self isNothing:value])
     {
         return [self nothing];
     }
@@ -135,24 +145,24 @@
                                  userInfo:nil];
 }
 
-- (BOOL)isJust
+- (BOOL)isSomething
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-isJust: must be overridden in subclass"
+                                   reason:@"-isSomething: must be overridden in subclass"
                                  userInfo:nil];
 }
 
-- (SVMaybe *)map:(SVMaybe *(^)(id))mapBlock
+- (SVMaybe *)ifSomething:(SVMaybe *(^)(id))mapBlock
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-map: must be overridden in subclass"
+                                   reason:@"-ifSomething: must be overridden in subclass"
                                  userInfo:nil];
 }
 
-- (SVMaybe *)and:(SVMaybe *)maybe
+- (SVMaybe *)andMaybe:(SVMaybe *)maybe
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-and: must be overridden in subclass"
+                                   reason:@"-andMaybe: must be overridden in subclass"
                                  userInfo:nil];
 }
 
@@ -163,10 +173,17 @@
                                  userInfo:nil];
 }
 
-- (id)whenNothing:(id)nothingValue else:(id (^)(id))justBlock
+- (SVMaybe *)whenNothing:(id)defaultValue else:(SVMaybe *(^)(id))justBlock
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:@"-whenNothing:else: must be overridden in subclass"
+                                 userInfo:nil];
+}
+
+- (SVMaybe *)whenNothing:(id)defaultValue
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-whenNothing: must be overridden in subclass"
                                  userInfo:nil];
 }
 

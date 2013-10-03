@@ -7,12 +7,8 @@
 //
 
 #import "SVMaybe.h"
-#import "NSArray+SVMaybe.h"
 #import "NSObject+SVMaybe.h"
 #import <XCTest/XCTest.h>
-
-MAKE_MAYBE_GENERIC(NSString)
-MAKE_MAYBE_GENERIC(NSNumber)
 
 @interface MaybeTests : XCTestCase
 
@@ -25,26 +21,26 @@ MAKE_MAYBE_GENERIC(NSNumber)
     XCTAssertTrue([[SVMaybe nothing] isNothing], @"");
 }
 
-- (void)testAndWithNothingReturnsNothing
+- (void)testAndMaybeNothingReturnsNothing
 {
-    SVMaybe *foo = [[[SVMaybe just:[NSNumber numberWithInt:0]] and:[SVMaybe nothing]] and:[SVMaybe just:@"bar"]];
+    SVMaybe *foo = [[[SVMaybe maybe:[NSNumber numberWithInt:0]] andMaybe:[SVMaybe nothing]] andMaybe:[SVMaybe maybe:@"bar"]];
     XCTAssertEqual(foo, [SVMaybe nothing], @"");
 }
 
-- (void)testAndWithNothingUsingPreprocessorReturnsNothing
+- (void)testAndMaybeNothingUsingPreprocessorReturnsNothing
 {
-    SVMaybe *foo = [[JUST([NSNumber numberWithInt:0]) and:NOTHING] and:JUST(@"bar")];
+    SVMaybe *foo = [[MAYBE([NSNumber numberWithInt:0]) andMaybe:NOTHING] andMaybe:MAYBE(@"bar")];
     XCTAssertEqual(foo, NOTHING, @"");
 }
 
-- (void)testJustNilReturnsNothing
+- (void)testMaybeNilReturnsNothing
 {
-    XCTAssertEqual(JUST(nil), NOTHING, @"");
+    XCTAssertEqual(MAYBE(nil), NOTHING, @"");
 }
 
 - (void)testValueOfJustGivesValue
 {
-    SVMaybe *foo = JUST(@"bar");
+    SVMaybe *foo = MAYBE(@"bar");
     XCTAssertTrue([[foo justValue] isEqualToString:@"bar"], @"");
 }
 
@@ -53,28 +49,35 @@ MAKE_MAYBE_GENERIC(NSNumber)
     XCTAssertThrows([NOTHING justValue], @"");
 }
 
-- (void)testNothingMappedReturnsNothing
+- (void)testNothingIfSomethingReturnsNothing
 {
-    SVMaybe *bound = [NOTHING map:^SVMaybe *(id value) {
-        return JUST(@"foo");
+    SVMaybe *bound = [NOTHING ifSomething:^SVMaybe *(id value) {
+        return MAYBE(@"foo");
     }];
     
     XCTAssertEqual(NOTHING, bound, @"");
 }
 
-- (void)testSimpleMapping
+- (void)testSimpleIfSomethingMapping
 {
-    SVMaybe<NSString> *bound = [JUST(@"foo") map:^SVMaybe *(id value) {
-        return JUST([(NSString *)value stringByAppendingString:@"bar"]);
+    SVMaybe *bound = [MAYBE(@"foo") ifSomething:^SVMaybe *(id value) {
+        return MAYBE([(NSString *)value stringByAppendingString:@"bar"]);
     }];
     
     XCTAssertTrue([[bound justValue] isEqualToString:@"foobar"], @"");
 }
 
-- (void)testWhenNothingWithNothingReturnsNothingValue
+- (void)testSimpleIfSomethingMappingWithMacro
+{
+    SVMaybe *bound = [MAYBE(@"foo") ifSomething:MAP(something, [something stringByAppendingString:@"bar"])];
+    
+    XCTAssertTrue([[bound justValue] isEqualToString:@"foobar"], @"");
+}
+
+- (void)testWhenNothingWithNothingReturnsDefaultValue
 {
     NSString *foo = [NOTHING whenNothing:@"foo" else:^id(id value) {
-        return @"bar";
+        return MAYBE(@"bar");
     }];
     
     XCTAssertTrue([foo isEqualToString:@"foo"], @"");
@@ -82,28 +85,30 @@ MAKE_MAYBE_GENERIC(NSNumber)
 
 - (void)testWhenNothingWithJustCallsBlock
 {
-    NSString *foo = [JUST(@"foo") whenNothing:@"foo" else:^id(id value) {
+    NSString *foo = [MAYBE(@"foo") whenNothing:@"foo" else:^id(id value) {
         return @"bar";
     }];
     
     XCTAssertTrue([foo isEqualToString:@"bar"], @"");
 }
 
-- (void)testUseForStringConcatenation
+- (void)testComplexBindingWithMacro
 {
-    NSDictionary *person = @{@"firstName":@"Foo", @"lastName":@"Bar", @"address":@{@"street":@"1234 Fake St."}};
+    [NSString defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSString *)evaluatedObject length] == 0;
+    }]];
     
-    NSString *fullName = [[[JUST(person) and:JUST([person objectForKey:@"firstName"])] and:JUST([person objectForKey:@"lastName"])] whenNothing:@"" else:^id(id value) {
-        return [NSString stringWithFormat:@"%@ %@", [person objectForKey:@"firstName"], [person objectForKey:@"lastName"]];
-    }];
-
-    XCTAssertTrue([fullName isEqualToString:@"Foo Bar"], @"");
-}
-
-- (void)testOnlyJustsOnNothingReturnsEmptyArray
-{
-    NSArray *arr = [NSArray arrayWithObjects:NOTHING, nil];
-    XCTAssertEqual([arr onlyJusts].count, (NSUInteger)0U, @"");
+    [NSDictionary defineNothing:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSDictionary *)evaluatedObject count] == 0;
+    }]];
+    
+    NSDictionary *person = @{@"firstName":@"", @"lastName":@"Bar", @"address":@{}};
+    
+    NSString *street = [[[MAYBE(person) ifSomething:MAP(person, MAYBE([person objectForKey:@"address"]))]
+                                        ifSomething:MAP(address, MAYBE([address objectForKey:@"street"]))]
+                                        whenNothing:@"No street"];
+    
+    XCTAssertTrue([street isEqualToString:@"No street"], @"");
 }
 
 @end

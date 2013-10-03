@@ -25,42 +25,43 @@ static void initialize_nothingDefinitions()
 
 + (BOOL)isNothing:(id)maybeSomething
 {
-    NSPredicate *definition;
-    
-    for (Class class in nothingDefinitions)
+    if (maybeSomething != nil)
     {
-        if ([maybeSomething isKindOfClass:class])
+        NSPredicate *definition = [self getNothingDefinition:maybeSomething];
+        
+        if (definition != nil)
         {
-            definition = [nothingDefinitions objectForKey:class];
+            return [definition evaluateWithObject:maybeSomething];
         }
-    }
-
-    if (definition != nil)
-    {
-        return [definition evaluateWithObject:maybeSomething];
     }
     
     return maybeSomething == nil;
 }
 
-- (id)andMaybe:(id)maybeSomething
++ (BOOL)isSomething:(id)maybeSomething
 {
-    if ([NSObject isNothing:self])
-    {
-        return nil;
-    }
-    
-    return maybeSomething;
+    return ![self isNothing:maybeSomething];
 }
 
-- (id)ifNotNothing:(id(^)(id maybeSomething))block
+#pragma mark - Private
+
++ (NSPredicate *)getNothingDefinition:(id)maybeSomething
 {
-    if ([NSObject isNothing:self])
+    NSPredicate *definition = [nothingDefinitions objectForKey:[maybeSomething class]];
+    
+    // Special handling for class clusters or definitions of superclasses
+    if (definition == nil)
     {
-        return nil;
+        for (Class class in nothingDefinitions)
+        {
+            if ([maybeSomething isKindOfClass:class])
+            {
+                return [nothingDefinitions objectForKey:class];
+            }
+        }
     }
     
-    return block(self);
+    return nil;
 }
 
 @end
