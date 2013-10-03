@@ -31,11 +31,11 @@
 + (SVMaybe *)nothing;
 + (SVMaybe *)maybe:(id)value;
 - (SVMaybe *)andMaybe:(SVMaybe *)maybe;
-- (SVMaybe *)ifSomething:(SVMaybe *(^)(id))block;
+- (SVMaybe *)whenSomething:(SVMaybe *(^)(id))block;
 - (SVMaybe *)whenNothing:(SVMaybe *)defaultValue else:(SVMaybe *(^)(id))block;
 - (SVMaybe *)whenNothing:(SVMaybe *)defaultValue;
-- (id)returnWhenNothing:(id)defaultValue else:(id(^)(id))block;
-- (id)returnWhenNothing:(id)defaultValue;
+- (id)whenNothingReturn:(id)defaultValue elseReturn:(id(^)(id))block;
+- (id)whenNothingReturn:(id)defaultValue;
 - (BOOL)isNothing;
 - (BOOL)isSomething;
 - (id)justValue;

@@ -66,7 +66,7 @@
 
 - (void)testNothingIfSomethingReturnsNothing
 {
-    SVMaybe *bound = [Nothing ifSomething:^SVMaybe *(id value) {
+    SVMaybe *bound = [Nothing whenSomething:^SVMaybe *(id value) {
         return Maybe(@"foo");
     }];
     
@@ -75,7 +75,7 @@
 
 - (void)testSimpleIfSomethingMapping
 {
-    SVMaybe *bound = [Maybe(@"foo") ifSomething:^SVMaybe *(id value) {
+    SVMaybe *bound = [Maybe(@"foo") whenSomething:^SVMaybe *(id value) {
         return Maybe([(NSString *)value stringByAppendingString:@"bar"]);
     }];
     
@@ -84,14 +84,14 @@
 
 - (void)testSimpleIfSomethingMappingWithMacro
 {
-    SVMaybe *bound = [Maybe(@"foo") ifSomething:MapMaybe(something, [something stringByAppendingString:@"bar"])];
+    SVMaybe *bound = [Maybe(@"foo") whenSomething:MapMaybe(something, [something stringByAppendingString:@"bar"])];
     
     XCTAssertTrue([[bound justValue] isEqualToString:@"foobar"], @"");
 }
 
 - (void)testWhenNothingWithNothingReturnsDefaultValue
 {
-    NSString *foo = [Nothing returnWhenNothing:@"foo" else:^id(id value) {
+    NSString *foo = [Nothing whenNothingReturn:@"foo" elseReturn:^id(id value) {
         return Maybe(@"bar");
     }];
     
@@ -100,7 +100,7 @@
 
 - (void)testWhenNothingWithJustCallsBlock
 {
-    NSString *foo = [Maybe(@"foo") returnWhenNothing:@"foo" else:^id(id value) {
+    NSString *foo = [Maybe(@"foo") whenNothingReturn:@"foo" elseReturn:^id(id value) {
         return @"bar";
     }];
     
@@ -119,9 +119,9 @@
     
     NSDictionary *person = @{@"firstName":@"", @"lastName":@"Bar", @"address":@{}};
     
-    NSString *street = [[[Maybe(person) ifSomething:MapMaybe(person, [person objectForKey:@"address"])]
-                                        ifSomething:MapMaybe(address, [address objectForKey:@"street"])]
-                                        returnWhenNothing:@"No street"];
+    NSString *street = [[[Maybe(person) whenSomething:MapMaybe(person, [person objectForKey:@"address"])]
+                                        whenSomething:MapMaybe(address, [address objectForKey:@"street"])]
+                                        whenNothingReturn:@"No street"];
     
     XCTAssertTrue([street isEqualToString:@"No street"], @"");
 }

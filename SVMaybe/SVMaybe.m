@@ -30,7 +30,7 @@
 
 @implementation SVNothingMaybe
 
-- (SVMaybe *)ifSomething:(SVMaybe *(^)(id))mapBlock
+- (SVMaybe *)whenSomething:(SVMaybe *(^)(id))mapBlock
 {
     return self;
 }
@@ -67,12 +67,12 @@
                                  userInfo:nil];
 }
 
-- (id)returnWhenNothing:(id)defaultValue else:(id(^)(id))block
+- (id)whenNothingReturn:(id)defaultValue elseReturn:(id(^)(id))block
 {
     return defaultValue;
 }
 
-- (id)returnWhenNothing:(id)defaultValue
+- (id)whenNothingReturn:(id)defaultValue
 {
     return defaultValue;
 }
@@ -100,7 +100,7 @@
     return self;
 }
 
-- (SVMaybe *)ifSomething:(SVMaybe *(^)(id))block
+- (SVMaybe *)whenSomething:(SVMaybe *(^)(id))block
 {
     return block(_value);
 }
@@ -135,12 +135,12 @@
     return _value;
 }
 
-- (id)returnWhenNothing:(id)defaultValue else:(id(^)(id))block
+- (id)whenNothingReturn:(id)defaultValue elseReturn:(id(^)(id))block
 {
     return block([self justValue]);
 }
 
-- (id)returnWhenNothing:(id)defaultValue
+- (id)whenNothingReturn:(id)defaultValue
 {
     return [self justValue];
 }
@@ -187,10 +187,10 @@
                                  userInfo:nil];
 }
 
-- (SVMaybe *)ifSomething:(SVMaybe *(^)(id))block
+- (SVMaybe *)whenSomething:(SVMaybe *(^)(id))block
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-ifSomething: must be overridden in subclass"
+                                   reason:@"-whenSomething: must be overridden in subclass"
                                  userInfo:nil];
 }
 
@@ -222,17 +222,17 @@
                                  userInfo:nil];
 }
 
-- (id)returnWhenNothing:(id)defaultValue else:(id(^)(id))block
+- (id)whenNothingReturn:(id)defaultValue elseReturn:(id(^)(id))block
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-returnWhenNothing:else: must be overridden in subclass"
+                                   reason:@"-whenNothingReturn:else: must be overridden in subclass"
                                  userInfo:nil];
 }
 
-- (id)returnWhenNothing:(id)defaultValue
+- (id)whenNothingReturn:(id)defaultValue
 {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-returnWhenNothing: must be overridden in subclass"
+                                   reason:@"-whenNothingReturn: must be overridden in subclass"
                                  userInfo:nil];
 }
 
