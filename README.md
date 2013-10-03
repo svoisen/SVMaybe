@@ -62,6 +62,11 @@ It also allows you to move beyond simple ```nil``` checks by offering run-time r
 
 Given this re-definition, if any of the strings in the above example were empty (or nil), the monad binding would short to nothing and return the appropriate default string wrapped in a SVMaybe.
 
+Why Bother?
+-----------
+
+In Objective-C, sending a message to ```nil``` returns ```nil```, so with a category on NSObject that adds a binding method like ```ifNotNil``` or Haskell's ```>>=``` operator, we already have Maybe monad functionality. Nothing more is necessary. But if we want functionality like that described above, this won't suffice. In that case, we need a "smarter" ```nil```, which is what SVMaybe provides.
+
 Creating Maybes
 ---------------
 
