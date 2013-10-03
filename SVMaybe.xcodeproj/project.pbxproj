@@ -14,6 +14,9 @@
 		E613E87117FBF0630013DC69 /* libSVMaybe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E613E85817FBF0630013DC69 /* libSVMaybe.a */; };
 		E613E87717FBF0630013DC69 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E613E87517FBF0630013DC69 /* InfoPlist.strings */; };
 		E613E87917FBF0630013DC69 /* SVMaybeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E613E87817FBF0630013DC69 /* SVMaybeTests.m */; };
+		E636608917FC91D400D5F095 /* NSObject+SVMaybe.h in Headers */ = {isa = PBXBuildFile; fileRef = E636608717FC91D400D5F095 /* NSObject+SVMaybe.h */; };
+		E636608A17FC91D400D5F095 /* NSObject+SVMaybe.m in Sources */ = {isa = PBXBuildFile; fileRef = E636608817FC91D400D5F095 /* NSObject+SVMaybe.m */; };
+		E636608E17FC962D00D5F095 /* NSObject+SVMaybeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E636608D17FC962D00D5F095 /* NSObject+SVMaybeTests.m */; };
 		E63A490817FC070700ADDD44 /* NSArray+SVMaybe.h in Headers */ = {isa = PBXBuildFile; fileRef = E63A490617FC070700ADDD44 /* NSArray+SVMaybe.h */; };
 		E63A490917FC070700ADDD44 /* NSArray+SVMaybe.m in Sources */ = {isa = PBXBuildFile; fileRef = E63A490717FC070700ADDD44 /* NSArray+SVMaybe.m */; };
 /* End PBXBuildFile section */
@@ -42,6 +45,9 @@
 		E613E87417FBF0630013DC69 /* SVMaybeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SVMaybeTests-Info.plist"; sourceTree = "<group>"; };
 		E613E87617FBF0630013DC69 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E613E87817FBF0630013DC69 /* SVMaybeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVMaybeTests.m; sourceTree = "<group>"; };
+		E636608717FC91D400D5F095 /* NSObject+SVMaybe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SVMaybe.h"; sourceTree = "<group>"; };
+		E636608817FC91D400D5F095 /* NSObject+SVMaybe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SVMaybe.m"; sourceTree = "<group>"; };
+		E636608D17FC962D00D5F095 /* NSObject+SVMaybeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SVMaybeTests.m"; sourceTree = "<group>"; };
 		E63A490617FC070700ADDD44 /* NSArray+SVMaybe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SVMaybe.h"; sourceTree = "<group>"; };
 		E63A490717FC070700ADDD44 /* NSArray+SVMaybe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+SVMaybe.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,6 +119,8 @@
 				E613E86417FBF0630013DC69 /* SVMaybe.h */,
 				E63A490617FC070700ADDD44 /* NSArray+SVMaybe.h */,
 				E63A490717FC070700ADDD44 /* NSArray+SVMaybe.m */,
+				E636608717FC91D400D5F095 /* NSObject+SVMaybe.h */,
+				E636608817FC91D400D5F095 /* NSObject+SVMaybe.m */,
 				E613E86517FBF0630013DC69 /* SVMaybe.m */,
 				E613E86217FBF0630013DC69 /* Supporting Files */,
 			);
@@ -132,6 +140,7 @@
 			children = (
 				E613E87817FBF0630013DC69 /* SVMaybeTests.m */,
 				E613E87317FBF0630013DC69 /* Supporting Files */,
+				E636608D17FC962D00D5F095 /* NSObject+SVMaybeTests.m */,
 			);
 			path = SVMaybeTests;
 			sourceTree = "<group>";
@@ -152,6 +161,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E636608917FC91D400D5F095 /* NSObject+SVMaybe.h in Headers */,
 				E63A490817FC070700ADDD44 /* NSArray+SVMaybe.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +249,7 @@
 			files = (
 				E63A490917FC070700ADDD44 /* NSArray+SVMaybe.m in Sources */,
 				E613E86617FBF0630013DC69 /* SVMaybe.m in Sources */,
+				E636608A17FC91D400D5F095 /* NSObject+SVMaybe.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,6 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E613E87917FBF0630013DC69 /* SVMaybeTests.m in Sources */,
+				E636608E17FC962D00D5F095 /* NSObject+SVMaybeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

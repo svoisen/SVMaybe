@@ -91,7 +91,7 @@ MAKE_MAYBE_GENERIC(NSNumber)
 
 - (void)testUseForStringConcatenation
 {
-    NSDictionary *person = @{@"firstName":@"Foo", @"lastName":@"Bar"};
+    NSDictionary *person = @{@"firstName":@"Foo", @"lastName":@"Bar", @"address":@{@"street":@"1234 Fake St."}};
     
     NSString *fullName = [[[JUST(person) and:JUST([person objectForKey:@"firstName"])] and:JUST([person objectForKey:@"lastName"])] whenNothing:@"" else:^id(id value) {
         return [NSString stringWithFormat:@"%@ %@", [person objectForKey:@"firstName"], [person objectForKey:@"lastName"]];
