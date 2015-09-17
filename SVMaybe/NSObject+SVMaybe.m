@@ -28,7 +28,7 @@ static NSMapTable *nothingDefinitions;
 __attribute__((constructor))
 static void initialize_nothingDefinitions()
 {
-    nothingDefinitions = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory capacity:0];
+    nothingDefinitions = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableStrongMemory];
 }
 
 @implementation NSObject (SVMaybe)
